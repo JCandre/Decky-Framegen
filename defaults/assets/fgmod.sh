@@ -133,7 +133,7 @@ is_bundled_proxy_copy() {
 
 has_patch_fingerprint() {
   local fingerprint
-  for fingerprint in "FRAMEGEN_PATCH" "OptiScaler.ini" "fakenvapi.dll" "fakenvapi.ini" "dlssg_to_fsr3_amd_is_better.dll" "D3D12_Optiscaler"; do
+  for fingerprint in "FRAMEGEN_PATCH" "OptiScaler.ini" "fakenvapi.dll" "fakenvapi.ini" "dlssg_to_fsr3_amd_is_better.dll" "D3D12_OptiScaler" "D3D12_Optiscaler"; do
     [[ -e "$exe_folder_path/$fingerprint" ]] && return 0
   done
   return 1
@@ -187,7 +187,7 @@ case "$selected_fsr4_variant" in
     variant_dir="$fgmod_path/fsr4-rdna2-valve-411-pre10"
     fsr4_upscaler_src="$variant_dir/amd_fidelityfx_upscaler_dx12.dll"
     variant_extra_files+=("amdxcffx64.dll" "amdxc64.dll")
-    variant_ini_overrides+=("FSR.Fsr4ForceModel=2")
+    variant_ini_overrides+=("FSR.Fsr4GpuSupport=3")
     variant_ini_overrides+=("Plugins.LoadCustomAmdxc64OnRdna2=true")
     ;;
   *)
@@ -196,6 +196,11 @@ case "$selected_fsr4_variant" in
     fsr4_upscaler_src="$variant_dir/amd_fidelityfx_upscaler_dx12.dll"
     ;;
 esac
+if [[ "$selected_fsr4_variant" != "rdna2-valve-411-pre10" ]]; then
+  variant_ini_overrides+=("FSR.Fsr4GpuSupport=auto")
+  variant_ini_overrides+=("FSR.Fsr4Model=auto")
+  variant_ini_overrides+=("Plugins.LoadCustomAmdxc64OnRdna2=false")
+fi
 [[ -f "$fsr4_upscaler_src" ]] || fsr4_upscaler_src="$fgmod_path/amd_fidelityfx_upscaler_dx12.dll"
 logger -t fgmod "Using FSR4 variant: $selected_fsr4_variant (source: $fsr4_upscaler_src)"
 
@@ -258,7 +263,7 @@ done
 unset cleanup_file
 
 # === Optional: Backup Original DLLs ===
-original_dlls=("d3dcompiler_47.dll" "amd_fidelityfx_dx12.dll" "amd_fidelityfx_framegeneration_dx12.dll" "amd_fidelityfx_upscaler_dx12.dll" "amdxcffx64.dll" "amdxc64.dll" "amd_fidelityfx_vk.dll")
+original_dlls=("d3dcompiler_47.dll" "amd_fidelityfx_dx12.dll" "amd_fidelityfx_loader_dx12.dll" "amd_fidelityfx_framegeneration_dx12.dll" "amd_fidelityfx_upscaler_dx12.dll" "amdxcffx64.dll" "amdxc64.dll" "amd_fidelityfx_vk.dll")
 for dll in "${original_dlls[@]}"; do
   existing_path="$exe_folder_path/$dll"
   backup_path="$exe_folder_path/$dll.b"
@@ -412,13 +417,13 @@ else
   echo " No plugins directory found in fgmod"
 fi
 
-# === D3D12_Optiscaler Directory (required for FSR4/FidelityFX DX12 path) ===
-if [[ -d "$fgmod_path/D3D12_Optiscaler" ]]; then
-  echo " Installing D3D12_Optiscaler directory"
-  cp -r "$fgmod_path/D3D12_Optiscaler" "$exe_folder_path/" || true
-  logger -t fgmod "D3D12_Optiscaler directory installed to $exe_folder_path"
+# === D3D12_OptiScaler Directory (required for FSR4/FidelityFX DX12 path) ===
+if [[ -d "$fgmod_path/D3D12_OptiScaler" ]]; then
+  echo " Installing D3D12_OptiScaler directory"
+  cp -r "$fgmod_path/D3D12_OptiScaler" "$exe_folder_path/" || true
+  logger -t fgmod "D3D12_OptiScaler directory installed to $exe_folder_path"
 else
-  echo " No D3D12_Optiscaler directory found in fgmod"
+  echo " No D3D12_OptiScaler directory found in fgmod"
 fi
 
 # === Supporting Libraries ===
@@ -426,7 +431,7 @@ cp -f "$fgmod_path/libxess.dll" "$exe_folder_path/" || true
 cp -f "$fgmod_path/libxess_dx11.dll" "$exe_folder_path/" || true
 cp -f "$fgmod_path/libxess_fg.dll" "$exe_folder_path/" || true
 cp -f "$fgmod_path/libxell.dll" "$exe_folder_path/" || true
-cp -f "$fgmod_path/amd_fidelityfx_dx12.dll" "$exe_folder_path/" || true
+cp -f "$fgmod_path/amd_fidelityfx_loader_dx12.dll" "$exe_folder_path/" || true
 cp -f "$fgmod_path/amd_fidelityfx_framegeneration_dx12.dll" "$exe_folder_path/" || true
 cp -f "$fsr4_upscaler_src" "$exe_folder_path/amd_fidelityfx_upscaler_dx12.dll" || true
 cp -f "$fgmod_path/amd_fidelityfx_vk.dll" "$exe_folder_path/" || true
@@ -439,16 +444,6 @@ done
 # === Nukem FG Mod Files (now in fgmod directory) ===
 cp -f "$fgmod_path/dlssg_to_fsr3_amd_is_better.dll" "$exe_folder_path/" || true
 # Note: dlssg_to_fsr3.ini is not included in v0.9.0-final archive
-
-# === FakeNVAPI Files ===
-# Remove legacy nvapi64.dll to avoid conflicts
-# rm -f "$exe_folder_path/nvapi64.dll"
-# echo " Removed legacy nvapi64.dll"
-
-# Copy fakenvapi.dll with original name (v1.3.8.1) 
-cp -f "$fgmod_path/fakenvapi.dll" "$exe_folder_path/" || true
-cp -f "$fgmod_path/fakenvapi.ini" "$exe_folder_path/" || true
-echo " Installed fakenvapi.dll and fakenvapi.ini"
 
 # === Additional Support Files ===
 # cp -f "$fgmod_path/d3dcompiler_47.dll" "$exe_folder_path/" || true

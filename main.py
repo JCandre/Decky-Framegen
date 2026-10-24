@@ -10,9 +10,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 OPTISCALER_ARCHIVE_ASSET = {
-    "name": "Optiscaler_0.9.4-final.20260718._MM.7z",
-    "sha256": "575cb4df866116093df75af607e37fd70e10f5163e0f23fd5c804142e80ef0ad",
-    "version": "0.9.4-final.20260718",
+    "name": "OptiScaler_v10.0.0-pre1_20261024.7z",
+    "sha256": "74f20189e0ec76288c86d69057b3feb4750f4680118a9852fb743b343274ac1d",
+    "version": "10.0.0-pre1.20261024",
 }
 
 FSR4_INT8_ASSET = {
@@ -31,6 +31,19 @@ FSR4_VALVE_411_ASSET = {
     "name": "amdxcffx64_valve_2.3.0.2913.dll",
     "sha256": "4e7dc37aebea3a90e3d3cc43e24cb2b54176b2535315f20dbe63b3b7cfc56b1e",
     "version": "4.1.1-valve-2.3.0.2913",
+}
+
+# These assets will be enabled once their bundled files and SHA-256 hashes are available.
+FSR4_OFFICIAL_412_ASSET = {
+    "name": "amdxcffx64.dll",
+    "sha256": None,
+    "version": "4.1.2-official",
+}
+
+FSR4_VULKAN_412_ASSET = {
+    "name": "amdvkffx64.dll",
+    "sha256": None,
+    "version": "4.1.2-vulkan",
 }
 
 AMDXC64_RDNA2_ASSET = {
@@ -53,6 +66,8 @@ OPTIPATCHER_ASSET = {
 
 FSR4_UPSCALER_FILENAME = "amd_fidelityfx_upscaler_dx12.dll"
 FSR4_DRIVER_OVERRIDE_FILENAME = "amdxcffx64.dll"
+D3D12_OPTISCALER_DIRNAME = "D3D12_OptiScaler"
+LEGACY_D3D12_OPTISCALER_DIRNAME = "D3D12_Optiscaler"
 INSTALL_MANIFEST_FILENAME = "install-manifest.json"
 VERSION_FILENAME = "version.txt"
 DEFAULT_FSR4_VARIANT = "rdna23-int8"
@@ -121,7 +136,7 @@ FSR4_VARIANTS = {
             }
         ],
         "config_overrides": {
-            "FSR.Fsr4ForceModel": "2",
+            "FSR.Fsr4GpuSupport": "4",
             "Plugins.LoadCustomAmdxc64OnRdna2": "true",
         },
     },
@@ -174,12 +189,14 @@ PATCH_FINGERPRINT_FILES = [
     "fakenvapi.dll",
     "fakenvapi.ini",
     "dlssg_to_fsr3_amd_is_better.dll",
-    "D3D12_Optiscaler",
+    D3D12_OPTISCALER_DIRNAME,
+    LEGACY_D3D12_OPTISCALER_DIRNAME,
 ]
 
 ORIGINAL_DLL_BACKUPS = [
     "d3dcompiler_47.dll",
     "amd_fidelityfx_dx12.dll",
+    "amd_fidelityfx_loader_dx12.dll",
     "amd_fidelityfx_framegeneration_dx12.dll",
     FSR4_UPSCALER_FILENAME,
     FSR4_DRIVER_OVERRIDE_FILENAME,
@@ -197,12 +214,10 @@ SUPPORT_FILES = [
     "libxess_dx11.dll",
     "libxess_fg.dll",
     "libxell.dll",
-    "amd_fidelityfx_dx12.dll",
+    "amd_fidelityfx_loader_dx12.dll",
     "amd_fidelityfx_framegeneration_dx12.dll",
     "amd_fidelityfx_vk.dll",
     "dlssg_to_fsr3_amd_is_better.dll",
-    "fakenvapi.dll",
-    "fakenvapi.ini",
 ]
 
 MARKER_FILENAME = "FRAMEGEN_PATCH"
@@ -379,6 +394,28 @@ class Plugin:
         )
         if result.returncode != 0:
             raise RuntimeError(result.stderr or result.stdout or f"Failed to extract {archive_path.name}")
+
+    def _flatten_archive_payload(self, extract_path: Path) -> None:
+        """Normalize archives that keep their runtime files in an OptiScaler subdirectory."""
+        payload_dir = extract_path / "OptiScaler"
+        if not payload_dir.is_dir():
+            return
+        for source in payload_dir.iterdir():
+            destination = extract_path / source.name
+            if destination.exists():
+                raise RuntimeError(f"Archive payload conflicts with existing path: {destination.name}")
+            shutil.move(str(source), destination)
+        payload_dir.rmdir()
+
+    def _validate_archive_layout(self, extract_path: Path) -> None:
+        required_paths = [
+            extract_path / "OptiScaler.dll",
+            extract_path / "OptiScaler.ini",
+            extract_path / FSR4_UPSCALER_FILENAME,
+        ]
+        missing_paths = [path.name for path in required_paths if not path.is_file()]
+        if missing_paths:
+            raise RuntimeError(f"Archive missing required runtime files: {', '.join(missing_paths)}")
 
     def _verify_bundled_asset(self, path: Path, expected_sha256: str, description: str) -> str:
         actual_sha256 = self._file_sha256(path)
@@ -756,6 +793,8 @@ class Plugin:
             extract_path.mkdir(parents=True, exist_ok=True)
 
             self._extract_archive(optiscaler_archive, extract_path)
+            self._flatten_archive_payload(extract_path)
+            self._validate_archive_layout(extract_path)
 
             source_file = extract_path / "OptiScaler.dll"
             renames_dir = extract_path / "renames"
@@ -1054,9 +1093,8 @@ class Plugin:
             "OptiScaler.dll",
             "OptiScaler.ini",
             "dlssg_to_fsr3_amd_is_better.dll",
-            "fakenvapi.dll",
-            "fakenvapi.ini",
             "amd_fidelityfx_dx12.dll",
+            "amd_fidelityfx_loader_dx12.dll",
             "amd_fidelityfx_framegeneration_dx12.dll",
             FSR4_UPSCALER_FILENAME,
             "amd_fidelityfx_vk.dll",
@@ -1146,7 +1184,8 @@ class Plugin:
         selected_variant_info = FSR4_VARIANTS[selected_variant]
         selected_config_overrides = self._fsr4_variant_config_overrides(selected_variant)
         if previous_variant == "rdna2-valve-411-pre10" and selected_variant != previous_variant:
-            selected_config_overrides.setdefault("FSR.Fsr4ForceModel", "auto")
+            selected_config_overrides.setdefault("FSR.Fsr4GpuSupport", "auto")
+            selected_config_overrides.setdefault("FSR.Fsr4Model", "auto")
             selected_config_overrides.setdefault("Plugins.LoadCustomAmdxc64OnRdna2", "false")
         selected_upscaler_src = self._fsr4_variant_path(fgmod_path, selected_variant)
         if not selected_upscaler_src.exists():
@@ -1243,13 +1282,13 @@ class Plugin:
             else:
                 decky.logger.warning("Plugins directory missing in fgmod bundle")
 
-            d3d12_src = fgmod_path / "D3D12_Optiscaler"
-            d3d12_dest = directory / "D3D12_Optiscaler"
+            d3d12_src = fgmod_path / D3D12_OPTISCALER_DIRNAME
+            d3d12_dest = directory / D3D12_OPTISCALER_DIRNAME
             if d3d12_src.exists():
                 shutil.copytree(d3d12_src, d3d12_dest, dirs_exist_ok=True)
-                decky.logger.info(f"Copied D3D12_Optiscaler directory to {d3d12_dest}")
+                decky.logger.info(f"Copied {D3D12_OPTISCALER_DIRNAME} directory to {d3d12_dest}")
             else:
-                decky.logger.warning("D3D12_Optiscaler directory missing in fgmod bundle")
+                decky.logger.warning(f"{D3D12_OPTISCALER_DIRNAME} directory missing in fgmod bundle")
 
             copied_support = []
             missing_support = []
@@ -1334,10 +1373,11 @@ class Plugin:
                 shutil.rmtree(plugins_dir, ignore_errors=True)
                 decky.logger.info(f"Removed plugins directory at {plugins_dir}")
 
-            d3d12_dir = directory / "D3D12_Optiscaler"
-            if d3d12_dir.exists():
-                shutil.rmtree(d3d12_dir, ignore_errors=True)
-                decky.logger.info(f"Removed D3D12_Optiscaler directory from {d3d12_dir}")
+            for d3d12_dirname in (D3D12_OPTISCALER_DIRNAME, LEGACY_D3D12_OPTISCALER_DIRNAME):
+                d3d12_dir = directory / d3d12_dirname
+                if d3d12_dir.exists():
+                    shutil.rmtree(d3d12_dir, ignore_errors=True)
+                    decky.logger.info(f"Removed {d3d12_dirname} directory from {d3d12_dir}")
 
             restored_backups = []
             for dll in dict.fromkeys(RESTORABLE_BACKUP_FILES):

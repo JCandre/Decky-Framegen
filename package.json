@@ -29,7 +29,7 @@
   "homepage": "https://github.com/xXJSONDeruloXx/Decky-Framegen.git",
   "devDependencies": {
     "@decky/rollup": "^1.0.1",
-    "@decky/ui": "^4.7.2",
+    "@decky/ui": "^4.16.0",
     "@rollup/rollup-linux-x64-musl": "^4.22.5",
     "@types/react": "18.3.3",
     "@types/react-dom": "18.3.0",
@@ -50,13 +50,17 @@
       ]
     }
   },
-  "remote_binary_bundling" : true,
-  "remote_binary": 
-  [
+  "remote_binary_bundling": true,
+  "remote_binary": [
     {
-      "sha256hash":  "575cb4df866116093df75af607e37fd70e10f5163e0f23fd5c804142e80ef0ad",
-      "url":  "https://github.com/optiscaler/OptiScaler/releases/download/v0.9.4/Optiscaler_0.9.4-final.20260718._MM.7z",
-      "name":  "Optiscaler_0.9.4-final.20260718._MM.7z"
+      "sha256hash": "74f20189e0ec76288c86d69057b3feb4750f4680118a9852fb743b343274ac1d",
+      "url": "https://github.com/optiscaler/OptiScaler-nightly/releases/download/nightly-20261024/OptiScaler_v10.0.0-pre1_20261024.7z",
+      "name": "OptiScaler_v10.0.0-pre1_20261024.7z"
+    },
+    {
+      "sha256hash": "575cb4df866116093df75af607e37fd70e10f5163e0f23fd5c804142e80ef0ad",
+      "url": "https://github.com/optiscaler/OptiScaler/releases/download/v0.9.4/Optiscaler_0.9.4-final.20260718._MM.7z",
+      "name": "Optiscaler_0.9.4-final.20260718._MM.7z"
     },
     {
       "sha256hash": "c7720bc16bede334f59a1a32cd22edbcbbb159685ed5240e61350a5fb0bc8a94",
@@ -90,4 +94,3 @@
     }
   ]
 }
-

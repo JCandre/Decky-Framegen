@@ -122,6 +122,7 @@ rm -f "nvngx.dll" "nvngx.ini" "amdxcffx64.dll" "amdxc64.dll"
 [[ -f "libxess_fg.dll.b" ]] && rm -f "libxess_fg.dll"
 [[ -f "libxell.dll.b" ]] && rm -f "libxell.dll"
 [[ -f "amd_fidelityfx_dx12.dll.b" ]] && rm -f "amd_fidelityfx_dx12.dll"
+[[ -f "amd_fidelityfx_loader_dx12.dll.b" ]] && rm -f "amd_fidelityfx_loader_dx12.dll"
 [[ -f "amd_fidelityfx_framegeneration_dx12.dll.b" ]] && rm -f "amd_fidelityfx_framegeneration_dx12.dll"
 [[ -f "amd_fidelityfx_upscaler_dx12.dll.b" ]] && rm -f "amd_fidelityfx_upscaler_dx12.dll"
 [[ -f "amdxcffx64.dll.b" ]] && rm -f "amdxcffx64.dll"
@@ -141,8 +142,8 @@ rm -f "nvapi64.dll" "nvapi64.dll.b"    # Legacy cleanup for older versions and b
 echo " Removing ASI plugins directory..."
 rm -rf "plugins"
 
-# === Remove D3D12_Optiscaler directory (required by v0.9.0-final) ===
-rm -rf "D3D12_Optiscaler"
+# === Remove D3D12_OptiScaler directories ===
+rm -rf "D3D12_OptiScaler" "D3D12_Optiscaler"
 
 # === Remove Legacy Files ===
 echo " Removing legacy files..."
@@ -152,7 +153,7 @@ rm -f "dlssg_to_fsr3_amd_is_better-3.0.dll"
 
 # === Restore Original DLLs ===
 echo " Restoring original DLLs..."
-restorable_dlls=("dxgi.dll" "winmm.dll" "dbghelp.dll" "version.dll" "wininet.dll" "winhttp.dll" "OptiScaler.asi" "d3dcompiler_47.dll" "amd_fidelityfx_dx12.dll" "amd_fidelityfx_framegeneration_dx12.dll" "amd_fidelityfx_upscaler_dx12.dll" "amdxcffx64.dll" "amdxc64.dll" "amd_fidelityfx_vk.dll" "libxess.dll" "libxess_dx11.dll" "libxess_fg.dll" "libxell.dll")
+restorable_dlls=("dxgi.dll" "winmm.dll" "dbghelp.dll" "version.dll" "wininet.dll" "winhttp.dll" "OptiScaler.asi" "d3dcompiler_47.dll" "amd_fidelityfx_dx12.dll" "amd_fidelityfx_loader_dx12.dll" "amd_fidelityfx_framegeneration_dx12.dll" "amd_fidelityfx_upscaler_dx12.dll" "amdxcffx64.dll" "amdxc64.dll" "amd_fidelityfx_vk.dll" "libxess.dll" "libxess_dx11.dll" "libxess_fg.dll" "libxell.dll")
 for dll in "${restorable_dlls[@]}"; do
   if [[ -f "${dll}.b" ]]; then
     mv "${dll}.b" "$dll"
