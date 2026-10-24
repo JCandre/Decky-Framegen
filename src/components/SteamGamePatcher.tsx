@@ -99,7 +99,7 @@ export function SteamGamePatcher({ dllName, fsr4Variant }: SteamGamePatcherProps
       });
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Failed to load games.";
-      toaster.toast({ title: "Decky Framegen", body: msg });
+      toaster.toast({ title: "Decky Framegen Experimental", body: msg });
     } finally {
       setGamesLoading(false);
     }
@@ -181,12 +181,12 @@ export function SteamGamePatcher({ dllName, fsr4Variant }: SteamGamePatcherProps
       setAppLaunchOptions(Number(selectedAppId), result.launch_options || "");
       const msg = result.message || `Patched ${selectedGame.name}.`;
       setResultMessage(msg);
-      toaster.toast({ title: "Decky Framegen", body: msg });
+      toaster.toast({ title: "Decky Framegen Experimental", body: msg });
       await loadStatus(selectedAppId);
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Patch failed.";
       setResultMessage(`Error: ${msg}`);
-      toaster.toast({ title: "Decky Framegen", body: msg });
+      toaster.toast({ title: "Decky Framegen Experimental", body: msg });
     } finally {
       setBusyAction(null);
     }
@@ -202,12 +202,12 @@ export function SteamGamePatcher({ dllName, fsr4Variant }: SteamGamePatcherProps
       setAppLaunchOptions(Number(selectedAppId), result.launch_options || "");
       const msg = result.message || `Unpatched ${selectedGame.name}.`;
       setResultMessage(msg);
-      toaster.toast({ title: "Decky Framegen", body: msg });
+      toaster.toast({ title: "Decky Framegen Experimental", body: msg });
       await loadStatus(selectedAppId);
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Unpatch failed.";
       setResultMessage(`Error: ${msg}`);
-      toaster.toast({ title: "Decky Framegen", body: msg });
+      toaster.toast({ title: "Decky Framegen Experimental", body: msg });
     } finally {
       setBusyAction(null);
     }

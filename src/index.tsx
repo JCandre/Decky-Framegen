@@ -53,12 +53,12 @@ function MainContent() {
 }
 
 export default definePlugin(() => ({
-  name: "Decky Framegen",
-  titleView: <div>Decky Framegen</div>,
+  name: "Decky Framegen Experimental",
+  titleView: <div>Decky Framegen Experimental</div>,
   alwaysRender: true,
   content: <MainContent />,
   icon: <MdOutlineAutoAwesomeMotion />,
   onDismount() {
-    console.log("Decky Framegen Plugin unmounted");
+    console.log("Decky Framegen Experimental plugin unmounted");
   },
 }));

@@ -36,7 +36,7 @@ export function SmartClipboardButton({
         <ConfirmModal 
           strTitle={`Patch Game with OptiScaler?`}
           strDescription={
-            "WARNING: Decky Framegen does not unpatch games when uninstalled. Be sure to unpatch the game or run the OptiScaler uninstall script inside the game files if you choose to uninstall the plugin or the game has issues."
+            "WARNING: Decky Framegen Experimental does not unpatch games when uninstalled. Be sure to unpatch the game or run the OptiScaler uninstall script inside the game files if you choose to uninstall the plugin or the game has issues."
           }
           strOKButtonText="Copy Patch Command"
           strCancelButtonText="Cancel"
