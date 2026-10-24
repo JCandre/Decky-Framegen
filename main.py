@@ -33,16 +33,15 @@ FSR4_VALVE_411_ASSET = {
     "version": "4.1.1-valve-2.3.0.2913",
 }
 
-# These assets will be enabled once their bundled files and SHA-256 hashes are available.
 FSR4_OFFICIAL_412_ASSET = {
     "name": "amdxcffx64.dll",
-    "sha256": None,
+    "sha256": "c33a287f3048bf02311cae430b6a977500b94ca7b315cd7bff751e6b03e483e3",
     "version": "4.1.2-official",
 }
 
 FSR4_VULKAN_412_ASSET = {
     "name": "amdvkffx64.dll",
-    "sha256": None,
+    "sha256": "80e761f7c8c0ec8ead7b321df01911baaf917defae51388d29eaecb1d6bc58bd",
     "version": "4.1.2-vulkan",
 }
 
@@ -107,6 +106,44 @@ FSR4_VARIANTS = {
             }
         ],
         "config_overrides": {},
+    },
+    "rdna2-official-412": {
+        "label": "4.1.2 driver override / RDNA3-4",
+        "dir_name": "fsr4-rdna3-4-official-412",
+        "sha256": "d0dcccc74a43c44ba435b7a369b456e0970d8a4464e4bd683119b374f2c9fb46",
+        "source_asset_name": OPTISCALER_ARCHIVE_ASSET["name"],
+        "source_version": OPTISCALER_ARCHIVE_ASSET["version"],
+        "uses_archive_native": True,
+        "extra_files": [
+            {
+                "name": FSR4_DRIVER_OVERRIDE_FILENAME,
+                "sha256": FSR4_OFFICIAL_412_ASSET["sha256"],
+                "source_asset_name": FSR4_OFFICIAL_412_ASSET["name"],
+                "source_version": FSR4_OFFICIAL_412_ASSET["version"],
+            }
+        ],
+        "config_overrides": {
+            "FSR.Fsr4GpuSupport": "4",
+        },
+    },
+    "rdna2-vulkan-412": {
+        "label": "4.1.2 Vulkan driver override / RDNA3-4",
+        "dir_name": "fsr4-rdna3-4-vulkan-412",
+        "sha256": "d0dcccc74a43c44ba435b7a369b456e0970d8a4464e4bd683119b374f2c9fb46",
+        "source_asset_name": OPTISCALER_ARCHIVE_ASSET["name"],
+        "source_version": OPTISCALER_ARCHIVE_ASSET["version"],
+        "uses_archive_native": True,
+        "extra_files": [
+            {
+                "name": FSR4_VULKAN_412_ASSET["name"],
+                "sha256": FSR4_VULKAN_412_ASSET["sha256"],
+                "source_asset_name": FSR4_VULKAN_412_ASSET["name"],
+                "source_version": FSR4_VULKAN_412_ASSET["version"],
+            }
+        ],
+        "config_overrides": {
+            "FSR.Fsr4GpuSupport": "4",
+        },
     },
     "rdna2-valve-411-pre10": {
         "label": "4.1.1 Valve RDNA2 compatibility",
@@ -772,6 +809,8 @@ class Plugin:
             amdxc64_rdna2_src = bin_path / AMDXC64_RDNA2_ASSET["name"]
             optiscaler_pre10_src = bin_path / OPTISCALER_PRE10_ASSET["name"]
             optipatcher_src = bin_path / OPTIPATCHER_ASSET["name"]
+            fsr4_official_412_src = assets_dir / FSR4_OFFICIAL_412_ASSET["name"]
+            fsr4_vulkan_412_src = assets_dir / FSR4_VULKAN_412_ASSET["name"]
             for required_path, asset in [
                 (optiscaler_archive, OPTISCALER_ARCHIVE_ASSET),
                 (fsr4_int8_src, FSR4_INT8_ASSET),
@@ -780,6 +819,8 @@ class Plugin:
                 (amdxc64_rdna2_src, AMDXC64_RDNA2_ASSET),
                 (optiscaler_pre10_src, OPTISCALER_PRE10_ASSET),
                 (optipatcher_src, OPTIPATCHER_ASSET),
+                (fsr4_official_412_src, FSR4_OFFICIAL_412_ASSET),
+                (fsr4_vulkan_412_src, FSR4_VULKAN_412_ASSET),
             ]:
                 if not required_path.exists():
                     return {
@@ -854,6 +895,50 @@ class Plugin:
                 official_411_driver,
                 FSR4_OFFICIAL_411_ASSET["sha256"],
                 "Prepared rdna34-official-411 driver override",
+            )
+
+            self._verify_bundled_asset(
+                fsr4_official_412_src,
+                FSR4_OFFICIAL_412_ASSET["sha256"],
+                "Bundled rdna2-official-412 driver override",
+            )
+            official_412_dir = extract_path / FSR4_VARIANTS["rdna2-official-412"]["dir_name"]
+            official_412_dir.mkdir(parents=True, exist_ok=True)
+            official_412_upscaler = official_412_dir / FSR4_UPSCALER_FILENAME
+            shutil.copy2(native_upscaler_root, official_412_upscaler)
+            self._verify_bundled_asset(
+                official_412_upscaler,
+                FSR4_VARIANTS["rdna2-official-412"]["sha256"],
+                "Prepared rdna2-official-412 FSR4 upscaler",
+            )
+            official_412_driver = official_412_dir / FSR4_DRIVER_OVERRIDE_FILENAME
+            shutil.copy2(fsr4_official_412_src, official_412_driver)
+            self._verify_bundled_asset(
+                official_412_driver,
+                FSR4_OFFICIAL_412_ASSET["sha256"],
+                "Prepared rdna2-official-412 driver override",
+            )
+
+            self._verify_bundled_asset(
+                fsr4_vulkan_412_src,
+                FSR4_VULKAN_412_ASSET["sha256"],
+                "Bundled rdna2-vulkan-412 driver override",
+            )
+            vulkan_412_dir = extract_path / FSR4_VARIANTS["rdna2-vulkan-412"]["dir_name"]
+            vulkan_412_dir.mkdir(parents=True, exist_ok=True)
+            vulkan_412_upscaler = vulkan_412_dir / FSR4_UPSCALER_FILENAME
+            shutil.copy2(native_upscaler_root, vulkan_412_upscaler)
+            self._verify_bundled_asset(
+                vulkan_412_upscaler,
+                FSR4_VARIANTS["rdna2-vulkan-412"]["sha256"],
+                "Prepared rdna2-vulkan-412 FSR4 upscaler",
+            )
+            vulkan_412_driver = vulkan_412_dir / FSR4_VULKAN_412_ASSET["name"]
+            shutil.copy2(fsr4_vulkan_412_src, vulkan_412_driver)
+            self._verify_bundled_asset(
+                vulkan_412_driver,
+                FSR4_VULKAN_412_ASSET["sha256"],
+                "Prepared rdna2-vulkan-412 driver override",
             )
 
             rdna2_valve_dir = extract_path / FSR4_VARIANTS["rdna2-valve-411-pre10"]["dir_name"]
