@@ -9,7 +9,7 @@ interface SmartClipboardButtonProps {
 }
 
 export function SmartClipboardButton({ 
-  command = "~/fgmod/fgmod %command%",
+  command = "~/fgmod-experimental/fgmod %command%",
   buttonText = "Copy Launch Command"
 }: SmartClipboardButtonProps) {
   const [isLoading, setIsLoading] = useState(false);

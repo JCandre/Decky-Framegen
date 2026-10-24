@@ -171,7 +171,7 @@ export function OptiScalerControls({ pathExists, setPathExists, fgmodInfo }: Opt
         <PanelSectionRow>
           <ToggleField
             label="Manual Mode"
-            description="Show wrapper command clipboard buttons for patching and unpatching through ~/fgmod scripts."
+            description="Show wrapper command clipboard buttons for patching and unpatching through ~/fgmod-experimental scripts."
             checked={manualClipboardModeEnabled}
             onChange={setManualClipboardModeEnabled}
           />

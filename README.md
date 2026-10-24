@@ -1,8 +1,10 @@
-# Decky Framegen Plugin
+# Decky Framegen Experimental
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/B0B71HZTAX)
 
 A Steam Deck plugin that enables DLSS upscaling and Frame Generation on handhelds by utilizing the latest OptiScaler and supporting modification software. This plugin automatically installs and manages all necessary components for FSR-based frame generation in games that support DLSS, or OptiFG for adding FG to games that do not have any existing FG pathway (highly experimental)
+
+The experimental plugin uses `~/fgmod-experimental`. It can be installed alongside the release plugin, which continues to use `~/fgmod`; uninstalling either plugin does not remove the other's bundle.
 
 ## What This Plugin Does
 
@@ -15,7 +17,7 @@ This plugin uses OptiScaler to replace DLSS calls with FSR3/FSR3.1, giving you:
 ## Features
 
 ### Core Functionality
-- **One-Click Setup**: Automatically downloads and installs OptiScaler into a "fgmod" directory
+- **One-Click Setup**: Automatically installs OptiScaler into `~/fgmod-experimental`, separate from the release plugin's `~/fgmod` directory
 - **Smart Installation**: Handles all required dependencies and library files
 - **Game Patching**: Easy copy-paste launch commands for enabling/disabling the mod per game
 - **OptiScaler Wiki**: Direct access to OptiScaler documentation and settings via a webpage launch button right inside the plugin.
@@ -33,7 +35,7 @@ This plugin uses OptiScaler to replace DLSS calls with FSR3/FSR3.1, giving you:
 5. **Advanced Options**: Press the Insert key in-game for additional OptiScaler settings
 
 ### Removing the Mod from Games
-- If you used the wrapper method, enable Manual Mode and click "Copy Unpatch Command", then replace the launch options with: `~/fgmod/fgmod-uninstaller.sh %command%`
+- If you used the wrapper method, enable Manual Mode and click "Copy Unpatch Command", then replace the launch options with: `~/fgmod-experimental/fgmod-uninstaller.sh %command%`
 - If you used the standard direct patch flow, use the in-plugin unpatch button instead
 - Run the game at least once to make the uninstaller script run. After that you can leave the launch option or remove it
 
@@ -66,10 +68,10 @@ Here's the breakdown of supported formats:
 **Example:**
 ```bash
 # Enable frame generation with XeFG output
-FrameGen_Enabled=true FGInput=fsrfg FGOutput=xefg ~/fgmod/fgmod %command%
+FrameGen_Enabled=true FGInput=fsrfg FGOutput=xefg ~/fgmod-experimental/fgmod %command%
 
 # Set DX12 upscaler to FSR 3.1 (Upgrades to FSR4)
-Dx12Upscaler=fsr31 ~/fgmod/fgmod %command%
+Dx12Upscaler=fsr31 ~/fgmod-experimental/fgmod %command%
 ```
 
 **Notes:**

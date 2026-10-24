@@ -31,11 +31,11 @@ export function ClipboardCommands({
       {manualModeEnabled ? (
         <>
           <SmartClipboardButton
-            command="~/fgmod/fgmod %command%"
+            command="~/fgmod-experimental/fgmod %command%"
             buttonText="Copy Patch Command"
           />
           <SmartClipboardButton
-            command="~/fgmod/fgmod-uninstaller.sh %command%"
+              command="~/fgmod-experimental/fgmod-uninstaller.sh %command%"
             buttonText="Copy Unpatch Command"
           />
         </>

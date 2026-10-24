@@ -70,6 +70,7 @@ LEGACY_D3D12_OPTISCALER_DIRNAME = "D3D12_Optiscaler"
 INSTALL_MANIFEST_FILENAME = "install-manifest.json"
 VERSION_FILENAME = "version.txt"
 DEFAULT_FSR4_VARIANT = "rdna23-int8"
+EXPERIMENTAL_BUNDLE_DIRNAME = "fgmod-experimental"
 
 FSR4_VARIANTS = {
     "rdna23-int8": {
@@ -790,12 +791,12 @@ class Plugin:
             return False
 
     async def extract_static_optiscaler(self, selected_default_variant: str = DEFAULT_FSR4_VARIANT) -> dict:
-        """Prepare the shared ~/fgmod bundle with all bundled FSR4 runtime variants."""
+        """Prepare the experimental bundle with all bundled FSR4 runtime variants."""
         try:
             decky.logger.info("Starting extract_static_optiscaler method")
 
             bin_path = Path(decky.DECKY_PLUGIN_DIR) / "bin"
-            extract_path = Path(decky.HOME) / "fgmod"
+            extract_path = Path(decky.HOME) / EXPERIMENTAL_BUNDLE_DIRNAME
             assets_dir = Path(decky.DECKY_PLUGIN_DIR) / "assets"
             selected_default_variant = self._normalize_fsr4_variant(selected_default_variant)
 
@@ -1069,7 +1070,10 @@ class Plugin:
 
             return {
                 "status": "success",
-                "message": f"Successfully extracted OptiScaler {OPTISCALER_ARCHIVE_ASSET['version']} to ~/fgmod",
+                "message": (
+                    f"Successfully extracted OptiScaler {OPTISCALER_ARCHIVE_ASSET['version']} "
+                    f"to ~/{EXPERIMENTAL_BUNDLE_DIRNAME}"
+                ),
                 "version": OPTISCALER_ARCHIVE_ASSET["version"],
                 "selected_default_variant": selected_default_variant,
                 "selected_default_variant_label": FSR4_VARIANTS[selected_default_variant]["label"],
@@ -1082,20 +1086,19 @@ class Plugin:
 
     async def run_uninstall_fgmod(self) -> dict:
         try:
-            # Remove fgmod directory
-            fgmod_path = Path(decky.HOME) / "fgmod"
+            fgmod_path = Path(decky.HOME) / EXPERIMENTAL_BUNDLE_DIRNAME
             
             if fgmod_path.exists():
                 shutil.rmtree(fgmod_path)
                 decky.logger.info(f"Removed directory: {fgmod_path}")
                 return {
                     "status": "success", 
-                    "output": "Successfully removed fgmod directory"
+                    "output": f"Successfully removed {EXPERIMENTAL_BUNDLE_DIRNAME} directory"
                 }
             else:
                 return {
                     "status": "success", 
-                    "output": "No fgmod directory found to remove"
+                    "output": f"No {EXPERIMENTAL_BUNDLE_DIRNAME} directory found to remove"
                 }
             
         except Exception as e:
@@ -1108,7 +1111,7 @@ class Plugin:
 
     async def set_default_fsr4_variant(self, selected_default_variant: str = DEFAULT_FSR4_VARIANT) -> dict:
         try:
-            fgmod_path = Path(decky.HOME) / "fgmod"
+            fgmod_path = Path(decky.HOME) / EXPERIMENTAL_BUNDLE_DIRNAME
             if not fgmod_path.exists():
                 return {"status": "error", "message": "OptiScaler bundle not installed. Run Install first."}
 
@@ -1173,7 +1176,7 @@ class Plugin:
             }
 
     async def check_fgmod_path(self) -> dict:
-        path = Path(decky.HOME) / "fgmod"
+        path = Path(decky.HOME) / EXPERIMENTAL_BUNDLE_DIRNAME
         required_files = [
             "OptiScaler.dll",
             "OptiScaler.ini",
@@ -1248,7 +1251,7 @@ class Plugin:
         fsr4_variant: str | None = None,
         allow_managed_support_cleanup: bool = False,
     ) -> dict:
-        fgmod_path = Path(decky.HOME) / "fgmod"
+        fgmod_path = Path(decky.HOME) / EXPERIMENTAL_BUNDLE_DIRNAME
         if not fgmod_path.exists():
             return {
                 "status": "error",
@@ -1259,7 +1262,7 @@ class Plugin:
         if not optiscaler_dll.exists():
             return {
                 "status": "error",
-                "message": "OptiScaler.dll not found in ~/fgmod. Reinstall OptiScaler.",
+                "message": f"OptiScaler.dll not found in ~/{EXPERIMENTAL_BUNDLE_DIRNAME}. Reinstall OptiScaler.",
             }
 
         preserve_ini = True
@@ -1752,7 +1755,7 @@ class Plugin:
             base = dll_name.replace(".dll", "")
             if f"WINEDLLOVERRIDES={base}=n,b" in normalized:
                 return True
-        if "fgmod/fgmod" in normalized:
+        if f"{EXPERIMENTAL_BUNDLE_DIRNAME}/fgmod" in normalized:
             return True
         return False
 
@@ -1914,7 +1917,7 @@ class Plugin:
                 return {"status": "error", "message": "Game install directory does not exist."}
             if self._is_game_running(game_info):
                 return {"status": "error", "message": "Close the game before patching."}
-            fgmod_path = Path(decky.HOME) / "fgmod"
+            fgmod_path = Path(decky.HOME) / EXPERIMENTAL_BUNDLE_DIRNAME
             if not fgmod_path.exists():
                 return {"status": "error", "message": "OptiScaler bundle not installed. Run Install first."}
 

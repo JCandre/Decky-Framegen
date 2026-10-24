@@ -84,7 +84,7 @@
             "dependsOn": [
                 "chmodplugins"
             ],
-            "command": "rsync -azp --chmod=D0755,F0755 --rsh='ssh -p ${config:deckport} ${config:deckkey}' out/ ${config:deckuser}@${config:deckip}:${config:deckdir}/homebrew/plugins",
+            "command": "rsync -azO --chmod=Du=rwx,Dgo=rx,Fu=rwx,Fgo=rx --rsh='ssh -p ${config:deckport} ${config:deckkey}' out/ ${config:deckuser}@${config:deckip}:${config:deckdir}/homebrew/plugins",
             "problemMatcher": []
         },
         //
@@ -99,6 +99,7 @@
         //"All-in-one" deploy task
         {
             "label": "deploy",
+            "detail": "Deploys build to deck",
             "dependsOrder": "sequence",
             "group": "none",
             "dependsOn": [
@@ -135,7 +136,7 @@
             "detail": "chmods plugins folder to prevent perms issues",
             "type": "shell",
             "group": "none",
-            "command": "ssh ${config:deckuser}@${config:deckip} -p ${config:deckport} ${config:deckkey} 'echo '${config:deckpass}' | sudo -S chmod -R ug+rw ${config:deckdir}/homebrew/plugins/'",
+            "command": "ssh ${config:deckuser}@${config:deckip} -p ${config:deckport} ${config:deckkey} 'echo '${config:deckpass}' | sudo -S chmod -R ug+rwX ${config:deckdir}/homebrew/plugins/'",
             "problemMatcher": []
         },
     ]

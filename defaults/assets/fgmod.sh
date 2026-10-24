@@ -15,7 +15,7 @@ error_exit() {
 }
 
 # === CONFIG ===
-fgmod_path="$HOME/fgmod"
+fgmod_path="$HOME/fgmod-experimental"
 dll_name="${DLL:-dxgi.dll}"
 preserve_ini="${PRESERVE_INI:-true}"
 fsr4_variant="${FGMOD_FSR4_VARIANT:-}"
@@ -441,7 +441,7 @@ for extra_file in "${variant_extra_files[@]}"; do
   fi
 done
 
-# === Nukem FG Mod Files (now in fgmod directory) ===
+# === Nukem FG Mod Files (now in the experimental bundle directory) ===
 cp -f "$fgmod_path/dlssg_to_fsr3_amd_is_better.dll" "$exe_folder_path/" || true
 # Note: dlssg_to_fsr3.ini is not included in v0.9.0-final archive
 
