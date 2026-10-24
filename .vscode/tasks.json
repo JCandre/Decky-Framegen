@@ -96,6 +96,14 @@
             "command": "echo '${config:deckdir}/homebrew/plugins/${config:pluginname}.zip' && ssh ${config:deckuser}@${config:deckip} -p ${config:deckport} ${config:deckkey} 'echo ${config:deckpass} | sudo -S mkdir 755 -p \"$(echo \"${config:deckdir}/homebrew/plugins/${config:pluginname}\" | sed \"s| |-|g\")\" && echo ${config:deckpass} | sudo -S chown ${config:deckuser}:${config:deckuser} \"$(echo \"${config:deckdir}/homebrew/plugins/${config:pluginname}\" | sed \"s| |-|g\")\" && echo ${config:deckpass} | sudo -S bsdtar -xzpf \"${config:deckdir}/homebrew/plugins/${config:pluginname}.zip\" -C \"$(echo \"${config:deckdir}/homebrew/plugins/${config:pluginname}\" | sed \"s| |-|g\")\" --strip-components=1 --fflags '",
             "problemMatcher": []
         },
+        {
+            "label": "restartdecky",
+            "detail": "",
+            "type": "shell",
+            "group": "none",
+            "command": "ssh ${config:deckuser}@${config:deckip} -p ${config:deckport} ${config:deckkey} 'echo ${config:deckpass} | sudo -S systemctl restart plugin_loader.service'",
+            "problemMatcher": []
+        },
         //"All-in-one" deploy task
         {
             "label": "deploy",
@@ -117,6 +125,19 @@
             "dependsOn": [
                 "build",
                 "deploy"
+            ],
+            "problemMatcher": []
+        },
+        //"All-in-on" build & deploy & restartdecky task
+        {
+            "label": "builddeployrestart",
+            "detail": "Builds plugin, deploys to deck and restart decky",
+            "dependsOrder": "sequence",
+            "group": "none",
+            "dependsOn": [
+                "build",
+                "deploy",
+                "restartdecky"
             ],
             "problemMatcher": []
         },
