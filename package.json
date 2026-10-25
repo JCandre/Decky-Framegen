@@ -58,11 +58,6 @@
       "name": "OptiScaler_v10.0.0-pre1_20261024.7z"
     },
     {
-      "sha256hash": "575cb4df866116093df75af607e37fd70e10f5163e0f23fd5c804142e80ef0ad",
-      "url": "https://github.com/optiscaler/OptiScaler/releases/download/v0.9.4/Optiscaler_0.9.4-final.20260718._MM.7z",
-      "name": "Optiscaler_0.9.4-final.20260718._MM.7z"
-    },
-    {
       "sha256hash": "a2b136b6affd35a49b141a936be935f7d5ddc8d8f9b8c9afbe62ff9ddb2538a0",
       "url": "https://github.com/xXJSONDeruloXx/OptiScaler-Bleeding-Edge/releases/download/fsr-4-1-1/amdxcffx64.dll",
       "name": "amdxcffx64.dll"
