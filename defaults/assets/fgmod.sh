@@ -196,9 +196,11 @@ case "$selected_fsr4_variant" in
     variant_ini_overrides+=("FSR.Fsr4GpuSupport=4")
     ;;
   *)
-    selected_fsr4_variant="rdna4-native"
-    variant_dir="$fgmod_path/fsr4-rdna4"
+    selected_fsr4_variant="rdna2-official-412"
+    variant_dir="$fgmod_path/fsr4-rdna2-official-412"
     fsr4_upscaler_src="$variant_dir/amd_fidelityfx_upscaler_dx12.dll"
+    variant_extra_files+=("amdxcffx64.dll")
+    variant_ini_overrides+=("FSR.Fsr4GpuSupport=4")
     ;;
 esac
 if [[ "$selected_fsr4_variant" != "rdna2-official-412" && "$selected_fsr4_variant" != "rdna2-vulkan-412" ]]; then

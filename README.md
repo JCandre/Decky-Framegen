@@ -82,17 +82,17 @@ Dx12Upscaler=fsr31 ~/fgmod-experimental/fgmod %command%
 
 ### Choosing an FSR4 Runtime
 
-- **4.1.1 FFX 2.3 SDK**: The upstream bundled path. Official FSR4 support is RDNA4 (FP8) and RDNA3 desktop GPUs (INT8); GPU capability selection is configured with `Fsr4GpuSupport`.
-- **4.1.1 Valve RDNA2 Compatibility**: The RDNA2 compatibility option. It uses the final SDK upscaler with the Valve `amdxcffx64.dll`, `amdxc64.dll`, the pre10 OptiScaler injector, and RDNA2-specific INI overrides.
-- **4.1.1 Driver Override**: Uses the same bundled SDK upscaler plus a separate `amdxcffx64.dll` AMD driver provider. It is a fallback/testing path and is not bundled by upstream.
-- **4.0.2c RDNA2/3 Compatibility**: Older compatibility runtime. Prefer the Valve 4.1.1 path for RDNA2 or the regular 4.1.1 driver override when those work for the game.
+- **4.1.2 Driver Override / RDNA2**: The default RDNA2 path. Uses the bundled SDK upscaler with the packaged 4.1.2 `amdxcffx64.dll` driver override and configures `Fsr4GpuSupport=4`.
+- **4.1.2 Vulkan Driver Override / RDNA2**: Uses the bundled SDK upscaler with the packaged 4.1.2 `amdvkffx64.dll` Vulkan driver override and configures `Fsr4GpuSupport=4`.
+- **4.1.1 FFX 2.3 SDK / RDNA3 dGPU + RDNA4**: The upstream bundled path. Official FSR4 support is RDNA4 (FP8) and RDNA3 desktop GPUs (INT8); GPU capability selection is configured with `Fsr4GpuSupport`.
+- **4.1.1 Driver Override / RDNA3-4**: Uses the bundled SDK upscaler plus a separate 4.1.1 `amdxcffx64.dll` AMD driver override.
 
 FSR 4.1.1 can fall back internally to FSR3 on unsupported hardware. Check the FSR4 watermark (`FSR4`, `FSR4-i8`, or `FSR3`) after changing a runtime to confirm the active path.
 
 ## Technical Details
 
 ### What's Included
-- **[OptiScaler 10.0.0-pre1](https://github.com/optiscaler/OptiScaler-nightly/releases/tag/nightly-20261024)**: Upstream nightly bundle with the FFX 2.3 SDK / FSR4.1.1. The plugin retains its separately bundled FSR4.0.2c compatibility runtime and existing 4.1.1 driver-override variants; the upstream archive itself does not include those driver-override DLLs.
+- **[OptiScaler 10.0.0-pre1](https://github.com/optiscaler/OptiScaler-nightly/releases/tag/nightly-20261024)**: Upstream nightly bundle with the FFX 2.3 SDK / FSR4.1.1. The plugin also packages separate 4.1.1 and 4.1.2 driver-override DLLs; the upstream archive does not include those overrides.
 - **Nukem9's DLSSG to FSR3 mod**: Allows use of DLSS inputs for FSR frame gen outputs, and xess or FSR upscaling outputs
 - **FakeNVAPI**: NVIDIA API emulation for AMD/Intel GPUs, to make DLSS options selectable in game
 - **Supporting Libraries**: All required DX12/Vulkan libraries (libxess.dll, amd_fidelityfx, etc.)
