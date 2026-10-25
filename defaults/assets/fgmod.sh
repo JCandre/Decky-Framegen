@@ -183,13 +183,27 @@ case "$selected_fsr4_variant" in
     fsr4_upscaler_src="$variant_dir/amd_fidelityfx_upscaler_dx12.dll"
     variant_extra_files+=("amdxcffx64.dll")
     ;;
+  rdna2-official-412)
+    variant_dir="$fgmod_path/fsr4-rdna2-official-412"
+    fsr4_upscaler_src="$variant_dir/amd_fidelityfx_upscaler_dx12.dll"
+    variant_extra_files+=("amdxcffx64.dll")
+    variant_ini_overrides+=("FSR.Fsr4GpuSupport=4")
+    ;;
+  rdna2-vulkan-412)
+    variant_dir="$fgmod_path/fsr4-rdna2-vulkan-412"
+    fsr4_upscaler_src="$variant_dir/amd_fidelityfx_upscaler_dx12.dll"
+    variant_extra_files+=("amdvkffx64.dll")
+    variant_ini_overrides+=("FSR.Fsr4GpuSupport=4")
+    ;;
   *)
     selected_fsr4_variant="rdna4-native"
     variant_dir="$fgmod_path/fsr4-rdna4"
     fsr4_upscaler_src="$variant_dir/amd_fidelityfx_upscaler_dx12.dll"
     ;;
 esac
-variant_ini_overrides+=("FSR.Fsr4GpuSupport=auto")
+if [[ "$selected_fsr4_variant" != "rdna2-official-412" && "$selected_fsr4_variant" != "rdna2-vulkan-412" ]]; then
+  variant_ini_overrides+=("FSR.Fsr4GpuSupport=auto")
+fi
 variant_ini_overrides+=("FSR.Fsr4Model=auto")
 variant_ini_overrides+=("Plugins.LoadCustomAmdxc64OnRdna2=false")
 [[ -f "$fsr4_upscaler_src" ]] || fsr4_upscaler_src="$fgmod_path/amd_fidelityfx_upscaler_dx12.dll"
@@ -204,7 +218,9 @@ is_managed_support_file() {
     for candidate in \
       "$fgmod_path/amd_fidelityfx_upscaler_dx12.dll" \
       "$fgmod_path/fsr4-rdna4/amd_fidelityfx_upscaler_dx12.dll" \
-      "$fgmod_path/fsr4-rdna3-4-official-411/amd_fidelityfx_upscaler_dx12.dll"; do
+      "$fgmod_path/fsr4-rdna3-4-official-411/amd_fidelityfx_upscaler_dx12.dll" \
+      "$fgmod_path/fsr4-rdna2-official-412/amd_fidelityfx_upscaler_dx12.dll" \
+      "$fgmod_path/fsr4-rdna2-vulkan-412/amd_fidelityfx_upscaler_dx12.dll"; do
       [[ -f "$candidate" && -f "$existing_file" ]] && cmp -s "$existing_file" "$candidate" && return 0
     done
     return 1
@@ -212,10 +228,16 @@ is_managed_support_file() {
   if [[ "$filename" == "amdxcffx64.dll" ]]; then
     for candidate in \
       "$fgmod_path/amdxcffx64.dll" \
-      "$fgmod_path/fsr4-rdna3-4-official-411/amdxcffx64.dll"; do
+      "$fgmod_path/fsr4-rdna3-4-official-411/amdxcffx64.dll" \
+      "$fgmod_path/fsr4-rdna2-official-412/amdxcffx64.dll"; do
       [[ -f "$candidate" && -f "$existing_file" ]] && cmp -s "$existing_file" "$candidate" && return 0
     done
     return 1
+  fi
+  if [[ "$filename" == "amdvkffx64.dll" ]]; then
+    candidate="$fgmod_path/fsr4-rdna2-vulkan-412/amdvkffx64.dll"
+    [[ -f "$candidate" && -f "$existing_file" ]] && cmp -s "$existing_file" "$candidate"
+    return
   fi
   candidate="$fgmod_path/$filename"
   [[ -f "$candidate" && -f "$existing_file" ]] && cmp -s "$existing_file" "$candidate"
