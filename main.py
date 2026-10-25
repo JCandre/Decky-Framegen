@@ -15,22 +15,10 @@ OPTISCALER_ARCHIVE_ASSET = {
     "version": "10.0.0-pre1.20261024",
 }
 
-FSR4_INT8_ASSET = {
-    "name": "amd_fidelityfx_upscaler_dx12.dll",
-    "sha256": "c7720bc16bede334f59a1a32cd22edbcbbb159685ed5240e61350a5fb0bc8a94",
-    "version": "4.0.2c",
-}
-
 FSR4_OFFICIAL_411_ASSET = {
     "name": "amdxcffx64.dll",
     "sha256": "a2b136b6affd35a49b141a936be935f7d5ddc8d8f9b8c9afbe62ff9ddb2538a0",
     "version": "4.1.1-official",
-}
-
-FSR4_VALVE_411_ASSET = {
-    "name": "amdxcffx64_valve_2.3.0.2913.dll",
-    "sha256": "4e7dc37aebea3a90e3d3cc43e24cb2b54176b2535315f20dbe63b3b7cfc56b1e",
-    "version": "4.1.1-valve-2.3.0.2913",
 }
 
 FSR4_OFFICIAL_412_ASSET = {
@@ -45,18 +33,6 @@ FSR4_VULKAN_412_ASSET = {
     "version": "4.1.2-vulkan",
 }
 
-AMDXC64_RDNA2_ASSET = {
-    "name": "amdxc64.dll",
-    "sha256": "a0a0af61d475e30a70966b3459f3793df772faf8f26ae3261d10554ff592cbd5",
-    "version": "8.18.10.0474",
-}
-
-OPTISCALER_PRE10_ASSET = {
-    "name": "OptiScaler_0.10.0-pre1.20260622_135940.dll",
-    "sha256": "b374b19081cc066365d0c6da4808d768e16469b0cbdfc478b6e95999947d5364",
-    "version": "0.10.0-pre1.20260622_135940",
-}
-
 OPTIPATCHER_ASSET = {
     "name": "OptiPatcher_rolling.asi",
     "sha256": "88b9e1be3559737cd205fdf5f2c8550cf1923fb1def4c603e5bf03c3e84131b1",
@@ -69,19 +45,10 @@ D3D12_OPTISCALER_DIRNAME = "D3D12_OptiScaler"
 LEGACY_D3D12_OPTISCALER_DIRNAME = "D3D12_Optiscaler"
 INSTALL_MANIFEST_FILENAME = "install-manifest.json"
 VERSION_FILENAME = "version.txt"
-DEFAULT_FSR4_VARIANT = "rdna23-int8"
+DEFAULT_FSR4_VARIANT = "rdna2-official-412"
 EXPERIMENTAL_BUNDLE_DIRNAME = "fgmod-experimental"
 
 FSR4_VARIANTS = {
-    "rdna23-int8": {
-        "label": "4.0.2c / RDNA2-3 compatibility",
-        "dir_name": "fsr4-rdna2-3",
-        "sha256": "c7720bc16bede334f59a1a32cd22edbcbbb159685ed5240e61350a5fb0bc8a94",
-        "source_asset_name": FSR4_INT8_ASSET["name"],
-        "source_version": FSR4_INT8_ASSET["version"],
-        "uses_archive_native": False,
-        "extra_files": [],
-    },
     "rdna4-native": {
         "label": "4.1.1 SDK / RDNA3 dGPU + RDNA4",
         "dir_name": "fsr4-rdna4",
@@ -144,38 +111,6 @@ FSR4_VARIANTS = {
         ],
         "config_overrides": {
             "FSR.Fsr4GpuSupport": "4",
-        },
-    },
-    "rdna2-valve-411-pre10": {
-        "label": "4.1.1 Valve RDNA2 compatibility",
-        "dir_name": "fsr4-rdna2-valve-411-pre10",
-        "sha256": "d0dcccc74a43c44ba435b7a369b456e0970d8a4464e4bd683119b374f2c9fb46",
-        "source_asset_name": OPTISCALER_ARCHIVE_ASSET["name"],
-        "source_version": OPTISCALER_ARCHIVE_ASSET["version"],
-        "uses_archive_native": True,
-        "injector": {
-            "name": "OptiScaler.dll",
-            "sha256": OPTISCALER_PRE10_ASSET["sha256"],
-            "source_asset_name": OPTISCALER_PRE10_ASSET["name"],
-            "source_version": OPTISCALER_PRE10_ASSET["version"],
-        },
-        "extra_files": [
-            {
-                "name": FSR4_DRIVER_OVERRIDE_FILENAME,
-                "sha256": FSR4_VALVE_411_ASSET["sha256"],
-                "source_asset_name": FSR4_VALVE_411_ASSET["name"],
-                "source_version": FSR4_VALVE_411_ASSET["version"],
-            },
-            {
-                "name": "amdxc64.dll",
-                "sha256": AMDXC64_RDNA2_ASSET["sha256"],
-                "source_asset_name": AMDXC64_RDNA2_ASSET["name"],
-                "source_version": AMDXC64_RDNA2_ASSET["version"],
-            }
-        ],
-        "config_overrides": {
-            "FSR.Fsr4GpuSupport": "4",
-            "Plugins.LoadCustomAmdxc64OnRdna2": "true",
         },
     },
 }
@@ -804,21 +739,13 @@ class Plugin:
                 return {"status": "error", "message": f"Bin directory not found: {bin_path}"}
 
             optiscaler_archive = bin_path / OPTISCALER_ARCHIVE_ASSET["name"]
-            fsr4_int8_src = bin_path / FSR4_INT8_ASSET["name"]
             fsr4_official_411_src = bin_path / FSR4_OFFICIAL_411_ASSET["name"]
-            fsr4_valve_411_src = bin_path / FSR4_VALVE_411_ASSET["name"]
-            amdxc64_rdna2_src = bin_path / AMDXC64_RDNA2_ASSET["name"]
-            optiscaler_pre10_src = bin_path / OPTISCALER_PRE10_ASSET["name"]
             optipatcher_src = bin_path / OPTIPATCHER_ASSET["name"]
             fsr4_official_412_src = assets_dir / FSR4_OFFICIAL_412_ASSET["name"]
             fsr4_vulkan_412_src = assets_dir / FSR4_VULKAN_412_ASSET["name"]
             for required_path, asset in [
                 (optiscaler_archive, OPTISCALER_ARCHIVE_ASSET),
-                (fsr4_int8_src, FSR4_INT8_ASSET),
                 (fsr4_official_411_src, FSR4_OFFICIAL_411_ASSET),
-                (fsr4_valve_411_src, FSR4_VALVE_411_ASSET),
-                (amdxc64_rdna2_src, AMDXC64_RDNA2_ASSET),
-                (optiscaler_pre10_src, OPTISCALER_PRE10_ASSET),
                 (optipatcher_src, OPTIPATCHER_ASSET),
                 (fsr4_official_412_src, FSR4_OFFICIAL_412_ASSET),
                 (fsr4_vulkan_412_src, FSR4_VULKAN_412_ASSET),
@@ -940,68 +867,6 @@ class Plugin:
                 vulkan_412_driver,
                 FSR4_VULKAN_412_ASSET["sha256"],
                 "Prepared rdna2-vulkan-412 driver override",
-            )
-
-            rdna2_valve_dir = extract_path / FSR4_VARIANTS["rdna2-valve-411-pre10"]["dir_name"]
-            rdna2_valve_dir.mkdir(parents=True, exist_ok=True)
-            rdna2_valve_upscaler = rdna2_valve_dir / FSR4_UPSCALER_FILENAME
-            shutil.copy2(native_upscaler_root, rdna2_valve_upscaler)
-            self._verify_bundled_asset(
-                rdna2_valve_upscaler,
-                FSR4_VARIANTS["rdna2-valve-411-pre10"]["sha256"],
-                "Prepared rdna2-valve-411-pre10 FSR4 upscaler",
-            )
-            self._verify_bundled_asset(
-                fsr4_valve_411_src,
-                FSR4_VALVE_411_ASSET["sha256"],
-                "Bundled rdna2-valve-411-pre10 driver override",
-            )
-            rdna2_valve_driver = rdna2_valve_dir / FSR4_DRIVER_OVERRIDE_FILENAME
-            shutil.copy2(fsr4_valve_411_src, rdna2_valve_driver)
-            self._verify_bundled_asset(
-                rdna2_valve_driver,
-                FSR4_VALVE_411_ASSET["sha256"],
-                "Prepared rdna2-valve-411-pre10 driver override",
-            )
-            self._verify_bundled_asset(
-                amdxc64_rdna2_src,
-                AMDXC64_RDNA2_ASSET["sha256"],
-                "Bundled rdna2-valve-411-pre10 amdxc64 override",
-            )
-            rdna2_valve_amdxc64 = rdna2_valve_dir / "amdxc64.dll"
-            shutil.copy2(amdxc64_rdna2_src, rdna2_valve_amdxc64)
-            self._verify_bundled_asset(
-                rdna2_valve_amdxc64,
-                AMDXC64_RDNA2_ASSET["sha256"],
-                "Prepared rdna2-valve-411-pre10 amdxc64 override",
-            )
-            self._verify_bundled_asset(
-                optiscaler_pre10_src,
-                OPTISCALER_PRE10_ASSET["sha256"],
-                "Bundled rdna2-valve-411-pre10 OptiScaler injector",
-            )
-            rdna2_valve_injector = rdna2_valve_dir / "OptiScaler.dll"
-            shutil.copy2(optiscaler_pre10_src, rdna2_valve_injector)
-            self._verify_bundled_asset(
-                rdna2_valve_injector,
-                OPTISCALER_PRE10_ASSET["sha256"],
-                "Prepared rdna2-valve-411-pre10 OptiScaler injector",
-            )
-            if not self._create_renamed_copies(rdna2_valve_injector, rdna2_valve_dir / "renames"):
-                return {"status": "error", "message": "Failed to prepare renamed pre10 OptiScaler proxies."}
-
-            rdna23_dir = extract_path / FSR4_VARIANTS["rdna23-int8"]["dir_name"]
-            rdna23_dir.mkdir(parents=True, exist_ok=True)
-            self._verify_bundled_asset(
-                fsr4_int8_src,
-                FSR4_VARIANTS["rdna23-int8"]["sha256"],
-                "Bundled rdna23-int8 FSR4 upscaler",
-            )
-            shutil.copy2(fsr4_int8_src, rdna23_dir / FSR4_UPSCALER_FILENAME)
-            self._verify_bundled_asset(
-                rdna23_dir / FSR4_UPSCALER_FILENAME,
-                FSR4_VARIANTS["rdna23-int8"]["sha256"],
-                "Prepared rdna23-int8 FSR4 upscaler",
             )
 
             selected_default_variant = self._activate_default_fsr4_variant(extract_path, selected_default_variant)
@@ -1270,10 +1135,6 @@ class Plugin:
         selected_variant = self._selected_fsr4_variant(fgmod_path, fsr4_variant)
         selected_variant_info = FSR4_VARIANTS[selected_variant]
         selected_config_overrides = self._fsr4_variant_config_overrides(selected_variant)
-        if previous_variant == "rdna2-valve-411-pre10" and selected_variant != previous_variant:
-            selected_config_overrides.setdefault("FSR.Fsr4GpuSupport", "auto")
-            selected_config_overrides.setdefault("FSR.Fsr4Model", "auto")
-            selected_config_overrides.setdefault("Plugins.LoadCustomAmdxc64OnRdna2", "false")
         selected_upscaler_src = self._fsr4_variant_path(fgmod_path, selected_variant)
         if not selected_upscaler_src.exists():
             selected_upscaler_src = fgmod_path / FSR4_UPSCALER_FILENAME

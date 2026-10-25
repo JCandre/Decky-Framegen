@@ -166,7 +166,7 @@ PY
     fi
   fi
 
-  echo "rdna23-int8"
+  echo "rdna2-official-412"
 }
 
 selected_fsr4_variant="$(resolve_fsr4_variant)"
@@ -183,24 +183,15 @@ case "$selected_fsr4_variant" in
     fsr4_upscaler_src="$variant_dir/amd_fidelityfx_upscaler_dx12.dll"
     variant_extra_files+=("amdxcffx64.dll")
     ;;
-  rdna2-valve-411-pre10)
-    variant_dir="$fgmod_path/fsr4-rdna2-valve-411-pre10"
-    fsr4_upscaler_src="$variant_dir/amd_fidelityfx_upscaler_dx12.dll"
-    variant_extra_files+=("amdxcffx64.dll" "amdxc64.dll")
-    variant_ini_overrides+=("FSR.Fsr4GpuSupport=3")
-    variant_ini_overrides+=("Plugins.LoadCustomAmdxc64OnRdna2=true")
-    ;;
   *)
-    selected_fsr4_variant="rdna23-int8"
-    variant_dir="$fgmod_path/fsr4-rdna2-3"
+    selected_fsr4_variant="rdna4-native"
+    variant_dir="$fgmod_path/fsr4-rdna4"
     fsr4_upscaler_src="$variant_dir/amd_fidelityfx_upscaler_dx12.dll"
     ;;
 esac
-if [[ "$selected_fsr4_variant" != "rdna2-valve-411-pre10" ]]; then
-  variant_ini_overrides+=("FSR.Fsr4GpuSupport=auto")
-  variant_ini_overrides+=("FSR.Fsr4Model=auto")
-  variant_ini_overrides+=("Plugins.LoadCustomAmdxc64OnRdna2=false")
-fi
+variant_ini_overrides+=("FSR.Fsr4GpuSupport=auto")
+variant_ini_overrides+=("FSR.Fsr4Model=auto")
+variant_ini_overrides+=("Plugins.LoadCustomAmdxc64OnRdna2=false")
 [[ -f "$fsr4_upscaler_src" ]] || fsr4_upscaler_src="$fgmod_path/amd_fidelityfx_upscaler_dx12.dll"
 logger -t fgmod "Using FSR4 variant: $selected_fsr4_variant (source: $fsr4_upscaler_src)"
 
@@ -212,10 +203,8 @@ is_managed_support_file() {
   if [[ "$filename" == "amd_fidelityfx_upscaler_dx12.dll" ]]; then
     for candidate in \
       "$fgmod_path/amd_fidelityfx_upscaler_dx12.dll" \
-      "$fgmod_path/fsr4-rdna2-3/amd_fidelityfx_upscaler_dx12.dll" \
       "$fgmod_path/fsr4-rdna4/amd_fidelityfx_upscaler_dx12.dll" \
-      "$fgmod_path/fsr4-rdna3-4-official-411/amd_fidelityfx_upscaler_dx12.dll" \
-      "$fgmod_path/fsr4-rdna2-valve-411-pre10/amd_fidelityfx_upscaler_dx12.dll"; do
+      "$fgmod_path/fsr4-rdna3-4-official-411/amd_fidelityfx_upscaler_dx12.dll"; do
       [[ -f "$candidate" && -f "$existing_file" ]] && cmp -s "$existing_file" "$candidate" && return 0
     done
     return 1
@@ -223,15 +212,7 @@ is_managed_support_file() {
   if [[ "$filename" == "amdxcffx64.dll" ]]; then
     for candidate in \
       "$fgmod_path/amdxcffx64.dll" \
-      "$fgmod_path/fsr4-rdna3-4-official-411/amdxcffx64.dll" \
-      "$fgmod_path/fsr4-rdna2-valve-411-pre10/amdxcffx64.dll"; do
-      [[ -f "$candidate" && -f "$existing_file" ]] && cmp -s "$existing_file" "$candidate" && return 0
-    done
-    return 1
-  fi
-  if [[ "$filename" == "amdxc64.dll" ]]; then
-    for candidate in \
-      "$fgmod_path/fsr4-rdna2-valve-411-pre10/amdxc64.dll"; do
+      "$fgmod_path/fsr4-rdna3-4-official-411/amdxcffx64.dll"; do
       [[ -f "$candidate" && -f "$existing_file" ]] && cmp -s "$existing_file" "$candidate" && return 0
     done
     return 1

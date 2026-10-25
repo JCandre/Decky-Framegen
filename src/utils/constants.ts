@@ -89,11 +89,6 @@ export const DEFAULT_PROXY_DLL: ProxyDllValue = "dxgi.dll";
 
 export const FSR4_VARIANT_OPTIONS = [
   {
-    value: "rdna23-int8",
-    label: "4.0.2c | RDNA2/3 Compatibility",
-    hint: "Older compatible runtime for RDNA2/3. In most cases, use the Valve 4.1.1 path for RDNA2 or the regular 4.1.1 driver override.",
-  },
-  {
     value: "rdna4-native",
     label: "4.1.1 | FFX 2.3 SDK",
     hint: "Uses OptiScaler 0.9.4's bundled FSR4.1.1 SDK upscaler. Official FSR4 support is RDNA4 (FP8) and RDNA3 desktop GPUs (INT8).",
@@ -113,15 +108,10 @@ export const FSR4_VARIANT_OPTIONS = [
     label: "4.1.2 | Vulkan Driver Override",
     hint: "Uses the bundled FSR4.1.2 SDK upscaler plus the packaged 4.1.2 amdvkffx64.dll Vulkan driver override.",
   },
-  {
-    value: "rdna2-valve-411-pre10",
-    label: "4.1.1 | Valve RDNA2 Compatibility",
-    hint: "Uses the final bundled FSR4.1.1 SDK upscaler with the existing pre10 injector, Valve 4.1.1 amdxcffx64.dll, amdxc64.dll, and RDNA2-specific INI overrides.",
-  },
 ] as const;
 
 export type Fsr4VariantValue = (typeof FSR4_VARIANT_OPTIONS)[number]["value"];
-export const DEFAULT_FSR4_VARIANT: Fsr4VariantValue = "rdna23-int8";
+export const DEFAULT_FSR4_VARIANT: Fsr4VariantValue = "rdna2-official-412";
 
 // Common timeout values
 export const TIMEOUTS = {
