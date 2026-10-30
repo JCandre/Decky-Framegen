@@ -111,8 +111,6 @@ proxy_backup_files=(
 cleanup_files=(
   "${proxy_backup_files[@]}"
   "OptiScaler.dll"
-  "amdxcffx64.dll"
-  "amdxc64.dll"
   "nvngx.dll"
   "_nvngx.dll"
   "nvngx-wrapper.dll"
@@ -174,32 +172,20 @@ variant_dir=""
 variant_extra_files=()
 variant_ini_overrides=()
 case "$selected_fsr4_variant" in
-  rdna4-native)
-    variant_dir="$fgmod_path/fsr4-rdna4"
-    fsr4_upscaler_src="$variant_dir/amd_fidelityfx_upscaler_dx12.dll"
-    ;;
-  rdna34-official-411)
-    variant_dir="$fgmod_path/fsr4-rdna3-4-official-411"
-    fsr4_upscaler_src="$variant_dir/amd_fidelityfx_upscaler_dx12.dll"
-    variant_extra_files+=("amdxcffx64.dll")
-    ;;
   rdna2-official-412)
     variant_dir="$fgmod_path/fsr4-rdna2-official-412"
     fsr4_upscaler_src="$variant_dir/amd_fidelityfx_upscaler_dx12.dll"
-    variant_extra_files+=("amdxcffx64.dll")
     variant_ini_overrides+=("FSR.Fsr4GpuSupport=4")
     ;;
   rdna2-vulkan-412)
     variant_dir="$fgmod_path/fsr4-rdna2-vulkan-412"
     fsr4_upscaler_src="$variant_dir/amd_fidelityfx_upscaler_dx12.dll"
-    variant_extra_files+=("amdvkffx64.dll")
     variant_ini_overrides+=("FSR.Fsr4GpuSupport=4")
     ;;
   *)
     selected_fsr4_variant="rdna2-official-412"
     variant_dir="$fgmod_path/fsr4-rdna2-official-412"
     fsr4_upscaler_src="$variant_dir/amd_fidelityfx_upscaler_dx12.dll"
-    variant_extra_files+=("amdxcffx64.dll")
     variant_ini_overrides+=("FSR.Fsr4GpuSupport=4")
     ;;
 esac
@@ -219,28 +205,19 @@ is_managed_support_file() {
   if [[ "$filename" == "amd_fidelityfx_upscaler_dx12.dll" ]]; then
     for candidate in \
       "$fgmod_path/amd_fidelityfx_upscaler_dx12.dll" \
-      "$fgmod_path/fsr4-rdna4/amd_fidelityfx_upscaler_dx12.dll" \
-      "$fgmod_path/fsr4-rdna3-4-official-411/amd_fidelityfx_upscaler_dx12.dll" \
       "$fgmod_path/fsr4-rdna2-official-412/amd_fidelityfx_upscaler_dx12.dll" \
       "$fgmod_path/fsr4-rdna2-vulkan-412/amd_fidelityfx_upscaler_dx12.dll"; do
       [[ -f "$candidate" && -f "$existing_file" ]] && cmp -s "$existing_file" "$candidate" && return 0
     done
     return 1
   fi
-  if [[ "$filename" == "amdxcffx64.dll" ]]; then
-    for candidate in \
-      "$fgmod_path/amdxcffx64.dll" \
-      "$fgmod_path/fsr4-rdna3-4-official-411/amdxcffx64.dll" \
-      "$fgmod_path/fsr4-rdna2-official-412/amdxcffx64.dll"; do
-      [[ -f "$candidate" && -f "$existing_file" ]] && cmp -s "$existing_file" "$candidate" && return 0
-    done
-    return 1
-  fi
-  if [[ "$filename" == "amdvkffx64.dll" ]]; then
-    candidate="$fgmod_path/fsr4-rdna2-vulkan-412/amdvkffx64.dll"
-    [[ -f "$candidate" && -f "$existing_file" ]] && cmp -s "$existing_file" "$candidate"
-    return
-  fi
+  case "$filename" in
+    amd_fidelityfx_loader_dx12.dll|amd_fidelityfx_framegeneration_dx12.dll|amd_fidelityfx_upscaler_vk.dll|amd_fidelityfx_loader_vk.dll|amd_fidelityfx_framegeneration_vk.dll|libxess.dll|libxess_dx11.dll|libxess_fg.dll|libxell.dll|dlssg_to_fsr3_amd_is_better.dll)
+      candidate="$fgmod_path/$filename"
+      [[ -f "$candidate" && -f "$existing_file" ]] && cmp -s "$existing_file" "$candidate"
+      return
+      ;;
+  esac
   candidate="$fgmod_path/$filename"
   [[ -f "$candidate" && -f "$existing_file" ]] && cmp -s "$existing_file" "$candidate"
 }
@@ -268,7 +245,7 @@ done
 unset cleanup_file
 
 # === Optional: Backup Original DLLs ===
-original_dlls=("d3dcompiler_47.dll" "amd_fidelityfx_dx12.dll" "amd_fidelityfx_loader_dx12.dll" "amd_fidelityfx_framegeneration_dx12.dll" "amd_fidelityfx_upscaler_dx12.dll" "amdxcffx64.dll" "amdxc64.dll" "amd_fidelityfx_vk.dll")
+original_dlls=("libxess.dll" "libxess_dx11.dll" "libxess_fg.dll" "libxell.dll" "amd_fidelityfx_loader_dx12.dll" "amd_fidelityfx_framegeneration_dx12.dll" "amd_fidelityfx_upscaler_dx12.dll" "amd_fidelityfx_loader_vk.dll" "amd_fidelityfx_upscaler_vk.dll" "amd_fidelityfx_framegeneration_vk.dll" "dlssg_to_fsr3_amd_is_better.dll")
 for dll in "${original_dlls[@]}"; do
   existing_path="$exe_folder_path/$dll"
   backup_path="$exe_folder_path/$dll.b"
@@ -439,7 +416,9 @@ cp -f "$fgmod_path/libxell.dll" "$exe_folder_path/" || true
 cp -f "$fgmod_path/amd_fidelityfx_loader_dx12.dll" "$exe_folder_path/" || true
 cp -f "$fgmod_path/amd_fidelityfx_framegeneration_dx12.dll" "$exe_folder_path/" || true
 cp -f "$fsr4_upscaler_src" "$exe_folder_path/amd_fidelityfx_upscaler_dx12.dll" || true
-cp -f "$fgmod_path/amd_fidelityfx_vk.dll" "$exe_folder_path/" || true
+cp -f "$fgmod_path/amd_fidelityfx_loader_vk.dll" "$exe_folder_path/" || true
+cp -f "$fgmod_path/amd_fidelityfx_upscaler_vk.dll" "$exe_folder_path/" || true
+cp -f "$fgmod_path/amd_fidelityfx_framegeneration_vk.dll" "$exe_folder_path/" || true
 for extra_file in "${variant_extra_files[@]}"; do
   if [[ -f "$variant_dir/$extra_file" ]]; then
     cp -f "$variant_dir/$extra_file" "$exe_folder_path/" || true

@@ -10,37 +10,19 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 OPTISCALER_ARCHIVE_ASSET = {
-    "name": "OptiScaler_v10.0.0-pre1_20261024.7z",
-    "sha256": "74f20189e0ec76288c86d69057b3feb4750f4680118a9852fb743b343274ac1d",
-    "version": "10.0.0-pre1.20261024",
-}
-
-FSR4_OFFICIAL_411_ASSET = {
-    "name": "amdxcffx64.dll",
-    "sha256": "a2b136b6affd35a49b141a936be935f7d5ddc8d8f9b8c9afbe62ff9ddb2538a0",
-    "version": "4.1.1-official",
-}
-
-FSR4_OFFICIAL_412_ASSET = {
-    "name": "amdxcffx64.dll",
-    "sha256": "c33a287f3048bf02311cae430b6a977500b94ca7b315cd7bff751e6b03e483e3",
-    "version": "4.1.2-official",
-}
-
-FSR4_VULKAN_412_ASSET = {
-    "name": "amdvkffx64.dll",
-    "sha256": "80e761f7c8c0ec8ead7b321df01911baaf917defae51388d29eaecb1d6bc58bd",
-    "version": "4.1.2-vulkan",
+    "name": "OptiScaler_v10.0.0-pre1_20261030.7z",
+    "sha256": "db4fe2deae7edd9f6657f5cb223edc694ebdec62b52f15a3a59913f8b656c176",
+    "version": "10.0.0-pre1.20261030",
 }
 
 OPTIPATCHER_ASSET = {
-    "name": "OptiPatcher_rolling.asi",
-    "sha256": "88b9e1be3559737cd205fdf5f2c8550cf1923fb1def4c603e5bf03c3e84131b1",
-    "version": "rolling",
+    "name": "OptiPatcher_v0.42.asi",
+    "sha256": "2a6e033aeda72d63281889480b2380da830530cf6e1e448e2056d451ade75f1b",
+    "version": "0.42",
 }
 
 FSR4_UPSCALER_FILENAME = "amd_fidelityfx_upscaler_dx12.dll"
-FSR4_DRIVER_OVERRIDE_FILENAME = "amdxcffx64.dll"
+FSR4_VULKAN_UPSCALER_FILENAME = "amd_fidelityfx_upscaler_vk.dll"
 D3D12_OPTISCALER_DIRNAME = "D3D12_OptiScaler"
 LEGACY_D3D12_OPTISCALER_DIRNAME = "D3D12_Optiscaler"
 INSTALL_MANIFEST_FILENAME = "install-manifest.json"
@@ -49,66 +31,26 @@ DEFAULT_FSR4_VARIANT = "rdna2-official-412"
 EXPERIMENTAL_BUNDLE_DIRNAME = "fgmod-experimental"
 
 FSR4_VARIANTS = {
-    "rdna4-native": {
-        "label": "4.1.1 SDK / RDNA3 dGPU + RDNA4",
-        "dir_name": "fsr4-rdna4",
-        "sha256": "d0dcccc74a43c44ba435b7a369b456e0970d8a4464e4bd683119b374f2c9fb46",
+    "rdna2-official-412": {
+        "label": "4.1.2 SDK / RDNA2",
+        "dir_name": "fsr4-rdna2-official-412",
+        "sha256": "aad4fccccb29084a655f9a4f9f613bd22c8c03fb4a0f8840148cc6543b4ccace",
         "source_asset_name": OPTISCALER_ARCHIVE_ASSET["name"],
         "source_version": OPTISCALER_ARCHIVE_ASSET["version"],
         "uses_archive_native": True,
         "extra_files": [],
-    },
-    "rdna34-official-411": {
-        "label": "4.1.1 driver override / RDNA3-4",
-        "dir_name": "fsr4-rdna3-4-official-411",
-        "sha256": "d0dcccc74a43c44ba435b7a369b456e0970d8a4464e4bd683119b374f2c9fb46",
-        "source_asset_name": OPTISCALER_ARCHIVE_ASSET["name"],
-        "source_version": OPTISCALER_ARCHIVE_ASSET["version"],
-        "uses_archive_native": True,
-        "extra_files": [
-            {
-                "name": FSR4_DRIVER_OVERRIDE_FILENAME,
-                "sha256": FSR4_OFFICIAL_411_ASSET["sha256"],
-                "source_asset_name": FSR4_OFFICIAL_411_ASSET["name"],
-                "source_version": FSR4_OFFICIAL_411_ASSET["version"],
-            }
-        ],
-        "config_overrides": {},
-    },
-    "rdna2-official-412": {
-        "label": "4.1.2 driver override / RDNA2",
-        "dir_name": "fsr4-rdna2-official-412",
-        "sha256": "d0dcccc74a43c44ba435b7a369b456e0970d8a4464e4bd683119b374f2c9fb46",
-        "source_asset_name": OPTISCALER_ARCHIVE_ASSET["name"],
-        "source_version": OPTISCALER_ARCHIVE_ASSET["version"],
-        "uses_archive_native": True,
-        "extra_files": [
-            {
-                "name": FSR4_DRIVER_OVERRIDE_FILENAME,
-                "sha256": FSR4_OFFICIAL_412_ASSET["sha256"],
-                "source_asset_name": FSR4_OFFICIAL_412_ASSET["name"],
-                "source_version": FSR4_OFFICIAL_412_ASSET["version"],
-            }
-        ],
         "config_overrides": {
             "FSR.Fsr4GpuSupport": "4",
         },
     },
     "rdna2-vulkan-412": {
-        "label": "4.1.2 Vulkan driver override / RDNA2",
+        "label": "4.1.2 SDK / Vulkan RDNA2",
         "dir_name": "fsr4-rdna2-vulkan-412",
-        "sha256": "d0dcccc74a43c44ba435b7a369b456e0970d8a4464e4bd683119b374f2c9fb46",
+        "sha256": "aad4fccccb29084a655f9a4f9f613bd22c8c03fb4a0f8840148cc6543b4ccace",
         "source_asset_name": OPTISCALER_ARCHIVE_ASSET["name"],
         "source_version": OPTISCALER_ARCHIVE_ASSET["version"],
         "uses_archive_native": True,
-        "extra_files": [
-            {
-                "name": FSR4_VULKAN_412_ASSET["name"],
-                "sha256": FSR4_VULKAN_412_ASSET["sha256"],
-                "source_asset_name": FSR4_VULKAN_412_ASSET["name"],
-                "source_version": FSR4_VULKAN_412_ASSET["version"],
-            }
-        ],
+        "extra_files": [],
         "config_overrides": {
             "FSR.Fsr4GpuSupport": "4",
         },
@@ -166,22 +108,6 @@ PATCH_FINGERPRINT_FILES = [
     LEGACY_D3D12_OPTISCALER_DIRNAME,
 ]
 
-ORIGINAL_DLL_BACKUPS = [
-    "d3dcompiler_47.dll",
-    "amd_fidelityfx_dx12.dll",
-    "amd_fidelityfx_loader_dx12.dll",
-    "amd_fidelityfx_framegeneration_dx12.dll",
-    FSR4_UPSCALER_FILENAME,
-    FSR4_DRIVER_OVERRIDE_FILENAME,
-    "amdxc64.dll",
-    "amd_fidelityfx_vk.dll",
-]
-
-RESTORABLE_BACKUP_FILES = [
-    *PROXY_DLL_BACKUPS,
-    *ORIGINAL_DLL_BACKUPS,
-]
-
 SUPPORT_FILES = [
     "libxess.dll",
     "libxess_dx11.dll",
@@ -189,8 +115,20 @@ SUPPORT_FILES = [
     "libxell.dll",
     "amd_fidelityfx_loader_dx12.dll",
     "amd_fidelityfx_framegeneration_dx12.dll",
-    "amd_fidelityfx_vk.dll",
+    "amd_fidelityfx_loader_vk.dll",
+    "amd_fidelityfx_upscaler_vk.dll",
+    "amd_fidelityfx_framegeneration_vk.dll",
     "dlssg_to_fsr3_amd_is_better.dll",
+]
+
+ORIGINAL_DLL_BACKUPS = [
+    *SUPPORT_FILES,
+    FSR4_UPSCALER_FILENAME,
+]
+
+RESTORABLE_BACKUP_FILES = [
+    *PROXY_DLL_BACKUPS,
+    *ORIGINAL_DLL_BACKUPS,
 ]
 
 MARKER_FILENAME = "FRAMEGEN_PATCH"
@@ -385,6 +323,11 @@ class Plugin:
             extract_path / "OptiScaler.dll",
             extract_path / "OptiScaler.ini",
             extract_path / FSR4_UPSCALER_FILENAME,
+            extract_path / "amd_fidelityfx_loader_dx12.dll",
+            extract_path / "amd_fidelityfx_framegeneration_dx12.dll",
+            extract_path / "amd_fidelityfx_loader_vk.dll",
+            extract_path / FSR4_VULKAN_UPSCALER_FILENAME,
+            extract_path / "amd_fidelityfx_framegeneration_vk.dll",
         ]
         missing_paths = [path.name for path in required_paths if not path.is_file()]
         if missing_paths:
@@ -577,12 +520,13 @@ class Plugin:
         if not upscaler_sha256:
             return None
         normalized_sha = str(upscaler_sha256).lower()
+        matching_variants = []
         for variant_id, variant in FSR4_VARIANTS.items():
             if variant.get("extra_files"):
                 continue
             if str(variant.get("sha256") or "").lower() == normalized_sha:
-                return variant_id
-        return None
+                matching_variants.append(variant_id)
+        return matching_variants[0] if len(matching_variants) == 1 else None
 
     def _fgmod_version(self, fgmod_path: Path) -> str | None:
         manifest = self._load_install_manifest(fgmod_path)
@@ -739,16 +683,10 @@ class Plugin:
                 return {"status": "error", "message": f"Bin directory not found: {bin_path}"}
 
             optiscaler_archive = bin_path / OPTISCALER_ARCHIVE_ASSET["name"]
-            fsr4_official_411_src = bin_path / FSR4_OFFICIAL_411_ASSET["name"]
             optipatcher_src = bin_path / OPTIPATCHER_ASSET["name"]
-            fsr4_official_412_src = assets_dir / FSR4_OFFICIAL_412_ASSET["name"]
-            fsr4_vulkan_412_src = assets_dir / FSR4_VULKAN_412_ASSET["name"]
             for required_path, asset in [
                 (optiscaler_archive, OPTISCALER_ARCHIVE_ASSET),
-                (fsr4_official_411_src, FSR4_OFFICIAL_411_ASSET),
                 (optipatcher_src, OPTIPATCHER_ASSET),
-                (fsr4_official_412_src, FSR4_OFFICIAL_412_ASSET),
-                (fsr4_vulkan_412_src, FSR4_VULKAN_412_ASSET),
             ]:
                 if not required_path.exists():
                     return {
@@ -789,47 +727,10 @@ class Plugin:
             native_upscaler_root = extract_path / FSR4_UPSCALER_FILENAME
             native_upscaler_sha256 = self._verify_bundled_asset(
                 native_upscaler_root,
-                FSR4_VARIANTS["rdna4-native"]["sha256"],
+                FSR4_VARIANTS["rdna2-official-412"]["sha256"],
                 "Archive-native FSR4 upscaler",
             )
 
-            rdna4_dir = extract_path / FSR4_VARIANTS["rdna4-native"]["dir_name"]
-            rdna4_dir.mkdir(parents=True, exist_ok=True)
-            rdna4_upscaler = rdna4_dir / FSR4_UPSCALER_FILENAME
-            shutil.copy2(native_upscaler_root, rdna4_upscaler)
-            self._verify_bundled_asset(
-                rdna4_upscaler,
-                FSR4_VARIANTS["rdna4-native"]["sha256"],
-                "Prepared rdna4-native FSR4 upscaler",
-            )
-
-            official_411_dir = extract_path / FSR4_VARIANTS["rdna34-official-411"]["dir_name"]
-            official_411_dir.mkdir(parents=True, exist_ok=True)
-            official_411_upscaler = official_411_dir / FSR4_UPSCALER_FILENAME
-            shutil.copy2(native_upscaler_root, official_411_upscaler)
-            self._verify_bundled_asset(
-                official_411_upscaler,
-                FSR4_VARIANTS["rdna34-official-411"]["sha256"],
-                "Prepared rdna34-official-411 FSR4 upscaler",
-            )
-            self._verify_bundled_asset(
-                fsr4_official_411_src,
-                FSR4_OFFICIAL_411_ASSET["sha256"],
-                "Bundled rdna34-official-411 driver override",
-            )
-            official_411_driver = official_411_dir / FSR4_DRIVER_OVERRIDE_FILENAME
-            shutil.copy2(fsr4_official_411_src, official_411_driver)
-            self._verify_bundled_asset(
-                official_411_driver,
-                FSR4_OFFICIAL_411_ASSET["sha256"],
-                "Prepared rdna34-official-411 driver override",
-            )
-
-            self._verify_bundled_asset(
-                fsr4_official_412_src,
-                FSR4_OFFICIAL_412_ASSET["sha256"],
-                "Bundled rdna2-official-412 driver override",
-            )
             official_412_dir = extract_path / FSR4_VARIANTS["rdna2-official-412"]["dir_name"]
             official_412_dir.mkdir(parents=True, exist_ok=True)
             official_412_upscaler = official_412_dir / FSR4_UPSCALER_FILENAME
@@ -838,19 +739,6 @@ class Plugin:
                 official_412_upscaler,
                 FSR4_VARIANTS["rdna2-official-412"]["sha256"],
                 "Prepared rdna2-official-412 FSR4 upscaler",
-            )
-            official_412_driver = official_412_dir / FSR4_DRIVER_OVERRIDE_FILENAME
-            shutil.copy2(fsr4_official_412_src, official_412_driver)
-            self._verify_bundled_asset(
-                official_412_driver,
-                FSR4_OFFICIAL_412_ASSET["sha256"],
-                "Prepared rdna2-official-412 driver override",
-            )
-
-            self._verify_bundled_asset(
-                fsr4_vulkan_412_src,
-                FSR4_VULKAN_412_ASSET["sha256"],
-                "Bundled rdna2-vulkan-412 driver override",
             )
             vulkan_412_dir = extract_path / FSR4_VARIANTS["rdna2-vulkan-412"]["dir_name"]
             vulkan_412_dir.mkdir(parents=True, exist_ok=True)
@@ -861,14 +749,6 @@ class Plugin:
                 FSR4_VARIANTS["rdna2-vulkan-412"]["sha256"],
                 "Prepared rdna2-vulkan-412 FSR4 upscaler",
             )
-            vulkan_412_driver = vulkan_412_dir / FSR4_VULKAN_412_ASSET["name"]
-            shutil.copy2(fsr4_vulkan_412_src, vulkan_412_driver)
-            self._verify_bundled_asset(
-                vulkan_412_driver,
-                FSR4_VULKAN_412_ASSET["sha256"],
-                "Prepared rdna2-vulkan-412 driver override",
-            )
-
             selected_default_variant = self._activate_default_fsr4_variant(extract_path, selected_default_variant)
             active_upscaler_sha256 = self._file_sha256(extract_path / FSR4_UPSCALER_FILENAME)
 
@@ -1049,7 +929,9 @@ class Plugin:
             "amd_fidelityfx_loader_dx12.dll",
             "amd_fidelityfx_framegeneration_dx12.dll",
             FSR4_UPSCALER_FILENAME,
-            "amd_fidelityfx_vk.dll",
+            "amd_fidelityfx_loader_vk.dll",
+            FSR4_VULKAN_UPSCALER_FILENAME,
+            "amd_fidelityfx_framegeneration_vk.dll",
             "libxess.dll",
             "libxess_dx11.dll",
             "libxess_fg.dll",

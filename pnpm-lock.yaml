@@ -22,8 +22,8 @@ importers:
         specifier: ^1.0.1
         version: 1.0.1
       '@decky/ui':
-        specifier: ^4.16.0
-        version: 4.16.0
+        specifier: ^4.16.4
+        version: 4.16.4
       '@rollup/rollup-linux-x64-musl':
         specifier: ^4.22.5
         version: 4.22.5
@@ -51,8 +51,8 @@ packages:
   '@decky/rollup@1.0.1':
     resolution: {integrity: sha512-dx1VJwD7ul14PA/aZvOwAfY/GujHzqZJ+MFb4OIUVi63/z4KWMSuZrK6QWo0S4LrNW3RzB3ua6LT0WcJaNY9gw==}
 
-  '@decky/ui@4.16.0':
-    resolution: {integrity: sha512-yvgwpDSr2tdPrpR1BPc8RvCDtmGbZ/pTULxm6jvwEoWhgxk8v1K0Y3ilpAd+aBYrDQa2fZbnqkKS6ZZTwsmz6A==}
+  '@decky/ui@4.16.4':
+    resolution: {integrity: sha512-XvnLXa0RcffsIMkl82s2puWQjgSYMnZj9C6N/xoL+9SmJ53V/65HPXU6Yw840hky6784Llc1sVRb5z/jByhB+A==}
 
   '@isaacs/cliui@8.0.2':
     resolution: {integrity: sha512-O8jcjabXaleOG9DQ0+ARXWZBTfnP4WNAqzuiJK7ll44AmxGKv/J2M4TPjxjY3znBCfvBXFzucm1twdyFybFqEA==}
@@ -923,7 +923,7 @@ snapshots:
       tslib: 2.7.0
       typescript: 5.6.2
 
-  '@decky/ui@4.16.0': {}
+  '@decky/ui@4.16.4': {}
 
   '@isaacs/cliui@8.0.2':
     dependencies:

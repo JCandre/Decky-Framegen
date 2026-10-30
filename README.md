@@ -78,21 +78,19 @@ Dx12Upscaler=fsr31 ~/fgmod-experimental/fgmod %command%
 - Environment variables override the OptiScaler.ini file on each game launch
 - Hyphenated section names like `[V-Sync]` can be accessed like `VSync_Option=value`
 - If an option name appears in multiple sections of the OptiScaler.ini file, use the `Section_Option` or `OptiScaler_Section_Option` format
-- OptiScaler 10.0.0-pre1 uses `FSR_Fsr4GpuSupport` to select the FSR 4 GPU capability level. This can expose an INT8 model on compatible hardware, but does not make older hardware compatible and does not affect the `amdxcffx64.dll` driver override. Enable `FSR_Fsr4EnableWatermark=true` to verify the active FSR runtime.
+- OptiScaler 10.0.0-pre1 uses `FSR_Fsr4GpuSupport` to select the FSR 4 GPU capability level. This can expose an INT8 model on compatible hardware, but does not make older hardware compatible. Enable `FSR_Fsr4EnableWatermark=true` to verify the active FSR runtime.
 
 ### Choosing an FSR4 Runtime
 
-- **4.1.2 Driver Override / RDNA2**: The default RDNA2 path. Uses the bundled SDK upscaler with the packaged 4.1.2 `amdxcffx64.dll` driver override and configures `Fsr4GpuSupport=4`.
-- **4.1.2 Vulkan Driver Override / RDNA2**: Uses the bundled SDK upscaler with the packaged 4.1.2 `amdvkffx64.dll` Vulkan driver override and configures `Fsr4GpuSupport=4`.
-- **4.1.1 FFX 2.3 SDK / RDNA3 dGPU + RDNA4**: The upstream bundled path. Official FSR4 support is RDNA4 (FP8) and RDNA3 desktop GPUs (INT8); GPU capability selection is configured with `Fsr4GpuSupport`.
-- **4.1.1 Driver Override / RDNA3-4**: Uses the bundled SDK upscaler plus a separate 4.1.1 `amdxcffx64.dll` AMD driver override.
+- **4.1.2 FFX 2.4 SDK / RDNA2**: The default RDNA2 path. Uses the FFX 2.4 SDK files included in the OptiScaler nightly and configures `Fsr4GpuSupport=4`.
+- **4.1.2 FFX 2.4 Vulkan SDK / RDNA2**: Uses the FFX 2.4 Vulkan SDK files included in the OptiScaler nightly and configures `Fsr4GpuSupport=4`.
 
-FSR 4.1.1 can fall back internally to FSR3 on unsupported hardware. Check the FSR4 watermark (`FSR4`, `FSR4-i8`, or `FSR3`) after changing a runtime to confirm the active path.
+FSR 4.1.2 can fall back internally to FSR3 on unsupported hardware. Check the FSR4 watermark (`FSR4`, `FSR4-i8`, or `FSR3`) after changing a runtime to confirm the active path.
 
 ## Technical Details
 
 ### What's Included
-- **[OptiScaler 10.0.0-pre1](https://github.com/optiscaler/OptiScaler-nightly/releases/tag/nightly-20261024)**: Upstream nightly bundle with the FFX 2.3 SDK / FSR4.1.1. The plugin also packages separate 4.1.1 and 4.1.2 driver-override DLLs; the upstream archive does not include those overrides.
+- **[OptiScaler 10.0.0-pre1](https://github.com/optiscaler/OptiScaler-nightly/releases/tag/nightly-20261030)**: Upstream nightly bundle with the FFX 2.4 SDK / FSR4.1.2, including the DX12 and Vulkan per-feature FFX runtime files.
 - **Nukem9's DLSSG to FSR3 mod**: Allows use of DLSS inputs for FSR frame gen outputs, and xess or FSR upscaling outputs
 - **FakeNVAPI**: NVIDIA API emulation for AMD/Intel GPUs, to make DLSS options selectable in game
 - **Supporting Libraries**: All required DX12/Vulkan libraries (libxess.dll, amd_fidelityfx, etc.)

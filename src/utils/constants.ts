@@ -89,24 +89,14 @@ export const DEFAULT_PROXY_DLL: ProxyDllValue = "dxgi.dll";
 
 export const FSR4_VARIANT_OPTIONS = [
   {
-    value: "rdna4-native",
-    label: "4.1.1 | FFX 2.3 SDK",
-    hint: "Uses OptiScaler 0.9.4's bundled FSR4.1.1 SDK upscaler. Official FSR4 support is RDNA4 (FP8) and RDNA3 desktop GPUs (INT8).",
-  },
-  {
-    value: "rdna34-official-411",
-    label: "4.1.1 | Driver Override",
-    hint: "Uses the final bundled FSR4.1.1 SDK upscaler plus the separately bundled 4.1.1 amdxcffx64.dll driver override.",
-  },
-  {
     value: "rdna2-official-412",
-    label: "4.1.2 | Driver Override",
-    hint: "Uses the bundled FSR4.1.2 SDK upscaler plus the packaged 4.1.2 amdxcffx64.dll driver override.",
+    label: "4.1.2 | FFX 2.4 SDK / RDNA2",
+    hint: "Uses the FFX 2.4 SDK files included in the OptiScaler nightly with RDNA2 compatibility enabled.",
   },
   {
     value: "rdna2-vulkan-412",
-    label: "4.1.2 | Vulkan Driver Override",
-    hint: "Uses the bundled FSR4.1.2 SDK upscaler plus the packaged 4.1.2 amdvkffx64.dll Vulkan driver override.",
+    label: "4.1.2 | FFX 2.4 Vulkan SDK / RDNA2",
+    hint: "Uses the FFX 2.4 Vulkan SDK files included in the OptiScaler nightly with RDNA2 compatibility enabled.",
   },
 ] as const;
 
